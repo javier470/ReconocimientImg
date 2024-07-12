@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Administrador de imagenes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <style>
+        body{
+            font-family: "Roboto", sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            padding: 5px 20px;
+        }
+        th>a,td>a{
+            text-decoration: none;
+            color: #000;
+        }
+        img {
+            max-width: 200px;
+            max-height: 200px;
+        }
+        .btn_upload{
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #000;
+            background: transparent;
+            transition: .3s ease;
+            transition-property: background, border-color;
+        }
+        .btn_upload:hover{
+            background: #fff;
+            border-color: #fff;
+        }
+        .data_form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #dedede;
+            padding-bottom: 20px;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+        td:nth-child(odd), th:nth-child(odd){
+            background: #dedede;
+        }
+        th:nth-child(odd){
+            border-radius: 20px 20px 0 0;
+        }
+        .alert-success{
+            color: green;
+        }
+        .alert-error{
+            color: red;
+        }
+        .table_container{
+            padding: 10px 25px;
+        }
+    </style>
+</head>
+<body>
+<div class="data_form">
+    <h1>Agregar Archivos</h1>
+    <form method="post" enctype="multipart/form-data" action="/upload">
+        <input type="file" name="file" accept="image/png,image/jpeg,image/webp,image/jpg,image/gif"/>
+        <button type="submit" class="btn_upload">Agregar Nuevo</button>
+    </form>
+    <div th:if="${message}" class="alert-success" role="alert">
+        <p th:text="${message}"></p>
+    </div>
+    <div th:if="${message_error}" class="alert-error" role="alert">
+        <p th:text="${message_error}"></p>
+    </div>
+</div>
+   
+<div class="table_container">
+    <h1 th:if="${documents.size() > 0}">Lista de imagenes</h1>
+    <h1 th:if="${documents.isEmpty()}">No hay archivos que mostrar aún</h1>
+    <table th:if="${documents.size() > 0}">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th><a href="?sort=name">Nombre</a></th>
+            <th><a href="?sort=uploadDate">Fecha</a></th>
+            <th><a href="?sort=size">Tamaño</a></th>
+            <th>Texto OCR</th>
+            <th>Imagen</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="document : ${documents}">
+            <td th:text="${document.id}"></td>
+            <td th:text="${document.name}"></td>
+            <td th:text="${document.formattedUploadDate}"></td>
+            <td th:text="${document.size}"></td>
+            <td th:text="${document.ocrText}"></td>
+            <td>
+                <a class="redirect_img" th:href="@{/__${document.name}__}" target="blank">
+                    <img th:src="@{/__${document.name}__}">
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
